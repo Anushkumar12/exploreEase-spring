@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Tour | Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: url('/images/1982064.jpg') no-repeat center center/cover;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(6px);
+      z-index: 0;
+    }
+    .form-card {
+      position: relative;
+      z-index: 2;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(15px);
+      padding: 2rem;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 600px;
+      margin: 3rem auto;
+    }
+    /* 🌟 Back to Home Button */
+    .back-home-btn {
+      position: absolute;
+      top: 5rem;
+      left: 2rem;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      padding: 10px 18px;
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      z-index: 2;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+      position:fixed;
+      margin-top:0.1rem;
+      
+      
+    }
+
+    .back-home-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35), 0 0 10px rgba(255,255,255,0.2);
+    }
+    /* 🌟 Toast Popup */
+    .toast-msg {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 14px 22px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      color: #fff;
+      font-weight: 600;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.4s ease;
+      font-size: 0.95rem;
+    }
+
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast-msg.success {
+      background: rgba(0, 255, 0, 0.15);
+      border: 1px solid rgba(0, 255, 0, 0.3);
+      box-shadow: 0 8px 25px rgba(0, 255, 0, 0.25);
+    }
+
+    .toast-msg.error {
+      background: rgba(255, 0, 0, 0.25);
+      border: 1px solid rgba(255, 100, 100, 0.4);
+      box-shadow: 0 8px 25px rgba(255, 0, 0, 0.25);
+    }
+  </style>
+</head>
+<body>
+ 
+  <!-- 🌟 Back Button -->
+  <a href="/admin/tours" class="back-home-btn">← Back to Manage Tour</a>
+
+  <div class="form-card">
+    <h2 class="text-center mb-4">✏️ Update Tour</h2>
+    <form id="updateTourForm" class="row g-3" th:object="${tour}">
+      <input type="hidden" id="tourId" th:value="${tour.id}" />
+
+      <div class="col-12">
+        <label>Title</label>
+        <input id="title" th:field="*{title}" class="form-control" required />
+      </div>
+
+      <div class="col-12">
+        <label>Description</label>
+        <textarea id="description" th:field="*{description}" class="form-control" required></textarea>
+      </div>
+
+      <div class="col-md-6">
+        <label>Location</label>
+        <input id="location" th:field="*{location}" class="form-control" required />
+      </div>
+
+      <div class="col-md-6">
+        <label>Price (₹)</label>
+        <input id="price" th:field="*{price}" type="number" class="form-control" required />
+      </div>
+
+      <div class="col-md-6">
+        <label>Duration (days)</label>
+        <input id="durationDays" th:field="*{durationDays}" type="number" class="form-control" />
+      </div>
+
+      <div class="col-md-6">
+        <label>Seats Available</label>
+        <input id="seatsAvailable" th:field="*{seatsAvailable}" type="number" class="form-control" />
+      </div>
+
+      <div class="col-12">
+        <label>Image URL</label>
+        <input id="imageUrl" th:field="*{imageUrl}" class="form-control" />
+      </div>
+
+      <div class="col-12 text-center mt-3">
+        <button type="submit" class="btn btn-success px-4">💾 Save Changes</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- 🌟 Toast Message Container -->
+  <div id="toast" class="toast-msg"></div>
+</body>
+<script>
+    // 🌟 Glass Toast Popup
+    function showToast(message, type = "success") {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = `toast-msg ${type} show`;
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3500);
+    }
+
+    // 🧾 Handle Update Form Submission (AJAX)
+    document.getElementById("updateTourForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById("tourId").value;
+      const tourData = {
+        title: document.getElementById("title").value,
+        description: document.getElementById("description").value,
+        location: document.getElementById("location").value,
+        price: parseFloat(document.getElementById("price").value),
+        durationDays: parseInt(document.getElementById("durationDays").value),
+        seatsAvailable: parseInt(document.getElementById("seatsAvailable").value),
+        imageUrl: document.getElementById("imageUrl").value
+      };
+
+      try {
+        const res = await fetch(`/api/tours/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(tourData)
+        });
+
+        if (res.ok) {
+          showToast("✅ Tour updated successfully!", "success");
+          setTimeout(() => window.location.href = "/admin/tours", 1500);
+        } else {
+          showToast("❌ Failed to update tour. Please try again.", "error");
+        }
+      } catch (error) {
+        showToast("⚠️ Network error. Try again later.", "error");
+      }
+    });
+  </script>
+
+</html>

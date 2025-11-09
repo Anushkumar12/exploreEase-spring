@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Tour | ExploreEase</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+  <style>
+    /* 🌅 Background & Global Style */
+    body {
+      background: url('/images/1982064.jpg') no-repeat center center/cover;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(8px);
+      z-index: 0;
+    }
+
+    /* 🌍 Header */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      color: #fff;
+      padding: 1rem;
+      font-weight: 600;
+      z-index: 2;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    header nav a {
+      color: #a2d2ff;
+      margin: 0 10px;
+      text-decoration: none;
+      transition: color 0.3s;
+      font-weight: 500;
+    }
+
+    header nav a:hover {
+      color: #fff;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+    }
+
+    /* 🧊 Glass Booking Container */
+    .booking-container {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(25px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      width: 90%;
+      max-width: 900px;
+      margin: 0.5rem auto 5rem;
+      transition: all 0.3s ease;
+       margin-left:13rem;
+    }
+
+    .booking-image {
+      width: 100%;
+      height: 420px;
+      object-fit: cover;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+    }
+
+    .booking-content {
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #f8f9fa;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .booking-info p {
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .price {
+      font-size: 1.4rem;
+      color: #00ff99;
+      font-weight: 600;
+      margin-top: 0.8rem;
+    }
+
+    label {
+      font-weight: 500;
+      color: #fff;
+    }
+
+    .form-control {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+    }
+
+    .form-control:focus {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: #0d6efd;
+      color: #fff;
+      box-shadow: none;
+    }
+
+    .btn-book {
+      background: linear-gradient(135deg, #007bff, #6610f2);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      margin-top: 1.2rem;
+      display: block;
+      width: 100%;
+    }
+
+    .btn-book:hover {
+      background: linear-gradient(135deg, #6610f2, #007bff);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 123, 255, 0.4);
+    }
+
+    footer {
+      text-align: center;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 1rem;
+      font-size: 0.9rem;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      z-index: 2;
+    }
+
+    .back-btn {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 8px;
+      padding: 8px 16px;
+      margin-top: 1rem;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .booking-container {
+        margin-top: 7rem;
+      }
+
+      .booking-content {
+        padding: 1.5rem;
+      }
+
+      .booking-image {
+        height: 260px;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+    }
+     /* 🌟 Back to Home Button */
+    .back-home-btn {
+      position: absolute;
+      top: 5rem;
+      left: 2rem;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      padding: 10px 18px;
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      z-index: 2;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+      margin-top:2rem;
+      position:fixed;
+    }
+
+    .back-home-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35), 0 0 10px rgba(255,255,255,0.2);
+    }
+    /* 🌟 Toast Popup Styles */
+.toast-msg {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 0, 0, 0.15);
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+  font-size: 0.95rem;
+  z-index: 9999;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.4s ease;
+}
+
+.toast-msg.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-msg.success {
+  background: rgba(0, 255, 0, 0.15);
+  border: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.toast-msg.error {
+  background: rgba(255, 0, 0, 0.25);
+  border: 1px solid rgba(255, 100, 100, 0.4);
+}
+    
+  </style>
+</head>
+
+<body>
+  <header>
+    🌴 ExploreEase — Book Your Tour
+    <nav>
+      <a href="/">Home</a>|
+      <a href="/tours">Tours</a>
+    
+    </nav>
+  </header>
+<a href="/tours" class="back-home-btn">← Back to Tours</a>
+  <div class="container text-center mt-5">
+    <a href="/tours" class="back-btn">&larr; Back to Tours</a>
+  </div>
+
+  <div class="booking-container">
+    <img th:src="@{${tour.imageUrl}}" alt="Tour Image" class="booking-image">
+    <div class="booking-content">
+      <h1 th:text="${tour.title}">Book Tour</h1>
+
+      <div class="booking-info text-center">
+        <p><strong>📍 Location:</strong> <span th:text="${tour.location}"></span></p>
+        <p><strong>💰 Price:</strong> ₹<span th:text="${tour.price}"></span></p>
+        <p><strong>🎟️ Seats Available:</strong> <span th:text="${tour.seatsAvailable}"></span></p>
+      </div>
+
+      <form id="bookingForm" class="mt-4">
+        <input type="hidden" id="tourId" th:value="${tour.id}">
+        <div class="mb-3">
+          <label for="userId" class="form-label">User ID:</label>
+          <input type="number" id="userId" class="form-control" placeholder="Enter your User ID" required>
+        </div>
+        <div class="mb-3">
+          <label for="seats" class="form-label">Seats to Book:</label>
+          <input type="number" id="seats" class="form-control" min="1" placeholder="Enter seats" required>
+        </div>
+        <button type="submit" class="btn-book">Confirm Booking</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>© 2025 ExploreEase — Plan. Travel. Live.</footer>
+
+<script>
+  // 🌟 Toast Message Function (Reusable)
+  function showToast(message, type = "error") {
+    // Remove old toast if any
+    const existing = document.querySelector(".toast-msg");
+    if (existing) existing.remove();
+
+    // Create toast element
+    const toast = document.createElement("div");
+    toast.className = `toast-msg ${type}`;
+    toast.innerText = message;
+    document.body.appendChild(toast);
+
+    // Animate fade-in
+    setTimeout(() => toast.classList.add("show"), 50);
+
+    // Auto-hide after 4 seconds
+    setTimeout(() => {
+      toast.classList.remove("show");
+      setTimeout(() => toast.remove(), 400);
+    }, 4000);
+  }
+
+  // 🧾 Handle Booking Submission
+  document.getElementById("bookingForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const payload = {
+      tourId: document.getElementById("tourId").value,
+      userId: document.getElementById("userId").value,
+      seatsBooked: document.getElementById("seats").value
+    };
+
+    try {
+      const res = await fetch("/api/bookings/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error("❌ Booking failed. Please check seat availability.");
+
+      showToast("✅ Booking confirmed! Redirecting...", "success");
+
+      // Redirect after short delay
+      setTimeout(() => window.location.href = "/booking-success", 1500);
+
+    } catch (err) {
+      showToast(err.message || "⚠️ Something went wrong. Try again.", "error");
+    }
+  });
+</script>
+
+</body>
+</html>

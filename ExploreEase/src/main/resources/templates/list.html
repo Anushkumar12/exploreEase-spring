@@ -1,0 +1,232 @@
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>ExploreEase | Tours</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url("/images/1982064.jpg") center/cover no-repeat fixed;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* Overlay for readability */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(6px);
+      z-index: 0;
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(6px);
+      color: #fff;
+      padding: 0.5rem 0.1rem; /* reduced height */
+      font-weight: 600;
+      z-index: 10;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+      transition: top 0.4s ease, padding 0.3s ease;
+    }
+
+    header h1 {
+      font-size: 1.1rem; /* smaller */
+      font-weight: 500;
+      margin: 0.2rem 0;
+    }
+
+    header nav a {
+      color: #a2d2ff;
+      margin: 0 10px;
+      text-decoration: none;
+      transition: color 0.3s, text-shadow 0.3s;
+      font-weight: 500;
+    }
+
+    header nav a:hover {
+      color: #fff;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+    }
+
+    main {
+      flex: 1;
+      position: relative;
+      z-index: 1;
+      padding: 6rem 1rem 3rem; /* 6rem ensures equal spacing from header to first row */
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem; /* equal spacing between rows and cards */
+    }
+
+    /* Glass-style cards */
+    .card {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-img-top {
+      height: 180px;
+      object-fit: cover;
+      transition: transform 0.2s ease-out;
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      flex: 1;
+    }
+
+    .card-title {
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-text {
+      font-size: 0.9rem;
+      color: #ddd;
+      margin-bottom: 0.5rem;
+      flex-grow: 1;
+    }
+
+    .price {
+      color: #ffd700;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .btn-glass {
+      display: inline-block;
+      width: 100%;
+      padding: 10px 0;
+      font-weight: 600;
+      font-size: 1rem;
+      text-align: center;
+      color: #fff;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-glass:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+      text-decoration: none;
+    }
+
+    footer {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ddd;
+      text-align: center;
+      padding: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(6px);
+      z-index: 10;
+    }
+
+    footer a {
+      color: #ffd700;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+     /* 🌟 Back to Home Button */
+    .back-home-btn {
+      position: absolute;
+      top: 5rem;
+      left: 2rem;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      padding: 10px 18px;
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      z-index: 2;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+      margin-top:2rem;
+      position:fixed;
+    }
+
+    .back-home-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35), 0 0 10px rgba(255,255,255,0.2);
+    }
+  </style>
+</head>
+
+<body>
+  <header id="header">
+    <h1>ExploreEase Tours</h1>
+    <nav>
+      <a href="/">Home</a> 
+     <!--   <a href="/login">Login</a> |
+      <a href="/register">Register</a> |
+      <a href="/add-tour">Add Tour</a> -->
+    </nav>
+  </header>
+
+  <main>
+   <a href="/" class="back-home-btn">← Back to Home</a>
+    <div class="card" th:each="tour : ${tours}">
+      <img th:src="${tour.imageUrl}" class="card-img-top" alt="Tour Image">
+      <div class="card-body">
+        <h5 class="card-title" th:text="${tour.title}">Tour Title</h5>
+        <p class="card-text" th:text="${tour.description}">Description</p>
+        <p class="price">₹<span th:text="${tour.price}"></span></p>
+        <a th:href="@{'/tour-details?id=' + ${tour.id}}" class="btn-glass mt-auto">View Details</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 ExploreEase | Crafted with ❤️ for Travelers |
+    <a href="/contact">Contact Us</a>
+  </footer>
+</body>
+</html>
